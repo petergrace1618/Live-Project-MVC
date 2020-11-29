@@ -59,10 +59,13 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 ```
 ---
 
-6914 Production Index - Production Ribbons
+### Production Index - Production Ribbons
 
 For this story you will be adding red ribbons to the production images on the Production Index page, similar to the ones on the home page, except for the fact that they will be located on the lower right corner of an image, rather than on the upper right corner.  For the production that is currently playing, the ribbon will say "Onstage".  For the productions that will play in the future, their ribbons will say "Coming Soon".  For all other productions the ribbons should not be visible.  You can make the ribbon background color slightly transparent.  The result will look like this:
 
+Solution: 
+In Views/Productions/Index.cshtml
+```
 <div class="prod-index-ribbon-parent">
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" alt="Card image cap">
@@ -78,7 +81,9 @@ For this story you will be adding red ribbons to the production images on the Pr
   </div>
 </a>
 </div>
-
+```
+In Content/site.css
+```
 /* BEGIN Production Index ribbon styles */
 .prod-index-ribbon-parent {
     position: relative;
@@ -99,8 +104,8 @@ For this story you will be adding red ribbons to the production images on the Pr
     top: 100%;
 }
 /* END Production Index Ribbon styles */
-
-============
+```
+---
 
 6915 Enhance Photo Delete Page
 
