@@ -8,7 +8,7 @@ In Controllers/ProductionsController.cs
 
 Add Data Annotation to GET form of Delete()
 
-```
+```c
 [Authorize(Roles = "Admin")]
 public ActionResult Delete(int? id)
 {
@@ -24,7 +24,8 @@ At the bottom of the Production Details page, if you log in as an admin, you'll 
 `"Edit | Current Productions | Back to List"`
 
 Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
-```
+
+```c#
 // "@:" renders rest of line as HTML. 
 // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#razor-code-blocks
 <p>
@@ -43,7 +44,8 @@ Please consolidate these links into a single line.  When you log out as an admin
 When you run the project, the SeedAwards method in the Startup file seeds the database with Awards.  However, if you run the project again, those same Awards are added to the database again.  Find out why the Awards are being duplicated every time the project is run and implement your solution.
 
 \*\*\*Please reach out for any clarification
-```
+
+```c#
 /* 
  * awards.ForEach(award => context.Awards.AddOrUpdate(aw => aw.AwardId, award));
  * 
@@ -65,7 +67,8 @@ For this story you will be adding red ribbons to the production images on the Pr
 
 Solution: 
 In Views/Productions/Index.cshtml
-```
+
+```html
 <div class="prod-index-ribbon-parent">
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" alt="Card image cap">
@@ -82,8 +85,10 @@ In Views/Productions/Index.cshtml
 </a>
 </div>
 ```
+
 In Content/site.css
-```
+
+```css
 /* BEGIN Production Index ribbon styles */
 .prod-index-ribbon-parent {
     position: relative;
