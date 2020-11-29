@@ -1,6 +1,6 @@
 # MVC Live Project
 
-## Restrict Access to Productions Delete Page
+### Restrict Access to Productions Delete Page
 If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
 Solution: 
@@ -18,7 +18,7 @@ public ActionResult Delete(int? id)
 
 ---
 
-## Production Details - Consolidate Links
+### Production Details - Consolidate Links
 At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
 
 `"Edit | Current Productions | Back to List"`
@@ -27,7 +27,6 @@ Please consolidate these links into a single line.  When you log out as an admin
 ```
 // "@:" renders rest of line as HTML. 
 // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#razor-code-blocks
-
 <p>
   @if (ViewContext.HttpContext.User.IsInRole("Admin"))
   {
@@ -40,19 +39,25 @@ Please consolidate these links into a single line.  When you log out as an admin
 
 ---
 
-6832: Fix Duplicating Awards Seeding
+### Fix Duplicating Awards Seeding
 When you run the project, the SeedAwards method in the Startup file seeds the database with Awards.  However, if you run the project again, those same Awards are added to the database again.  Find out why the Awards are being duplicated every time the project is run and implement your solution.
 
-***Please reach out for any clarification
-
+\*\*\*Please reach out for any clarification
+```
 /* 
  * awards.ForEach(award => context.Awards.AddOrUpdate(aw => aw.AwardId, award));
  * 
- * This line of code produces duplicate seed records every time the program is run. This is due to the use of AwardId in AddOrUpdate(). When an Award object is instantiated, AwardId is not yet known because its value is set by the DB upon insertion. Hence, the object will always not be found, and therefore will always be added. Whereas, in the other seed methods the calls to AddOrUpdate() refer to a table column that acts as an alternate key that uniquely identifies the record. In the Awards table the compound key (Year, Name, Type, Category) serves as an alternate key.
+ * This line of code produces duplicate seed records every time the program is run. 
+ * This is due to the use of AwardId in AddOrUpdate(). When an Award object is instantiated, 
+ * AwardId is not yet known because its value is set by the DB upon insertion. 
+ * Hence, the object will always not be found, and therefore will always be added. 
+ * Whereas, in the other seed methods the calls to AddOrUpdate() refer to a table column 
+ * that acts as an alternate key that uniquely identifies the record. In the Awards table 
+ * the compound key (Year, Name, Type, Category) serves as an alternate key.
  */
 awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.Type, a.Category }, award));
-
-=========
+```
+---
 
 6914 Production Index - Production Ribbons
 
