@@ -6,39 +6,37 @@ If a User appends /Delete/#, where # is the ID of one of the Productions, the Us
 **Solution:** 
 In Controllers/ProductionsController.cs
 
-Add Data Annotation to GET form of Delete()
-
-```c
+Add Data Annotation to the GET form of Delete()
+```c#
+// GET: Productions/Delete/5
 [Authorize(Roles = "Admin")]
 public ActionResult Delete(int? id)
 {
     ...
 }
 ```
-
 ---
 
 ### Production Details - Consolidate Links
 At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
 
-`"Edit | Current Productions | Back to List"`
+`Edit | Current Productions | Back to List`
 
 Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
 
 **Solution:**
-```c#
+```cshtml
 // "@:" renders rest of line as HTML. 
 // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#razor-code-blocks
-<p>
+<div>
   @if (ViewContext.HttpContext.User.IsInRole("Admin"))
   {
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProductionId }) @:|
   }
     @Html.ActionLink("Current Productions", "Current") |
     @Html.ActionLink("Back to List", "Index")
-</p>
+</div>
 ```
-
 ---
 
 ### Fix Duplicating Awards Seeding
@@ -68,7 +66,7 @@ For this story you will be adding red ribbons to the production images on the Pr
 **Solution:**
 In Views/Productions/Index.cshtml
 
-```html
+```cshtml
 <div class="prod-index-ribbon-parent">
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" 
