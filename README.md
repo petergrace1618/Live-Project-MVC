@@ -25,7 +25,7 @@ At the bottom of the Production Details page, if you log in as an admin, you'll 
 Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
 
 **Solution:**
-```cshtml
+```c#
 // "@:" renders rest of line as HTML. 
 // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#razor-code-blocks
 <div>
@@ -66,7 +66,7 @@ For this story you will be adding red ribbons to the production images on the Pr
 **Solution:**
 In Views/Productions/Index.cshtml
 
-```cshtml
+```c#
 <div class="prod-index-ribbon-parent">
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" 
