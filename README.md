@@ -71,7 +71,9 @@ In Views/Productions/Index.cshtml
 ```html
 <div class="prod-index-ribbon-parent">
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
-  <img class="card-img-top production-index-img bg-black" src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" alt="Card image cap">
+  <img class="card-img-top production-index-img bg-black" 
+       src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" 
+       alt="Card image cap">
   <div class="prod-index-ribbon">
 	@if (item.IsCurrent)
 	{
