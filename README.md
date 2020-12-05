@@ -63,6 +63,8 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 
 For this story you will be adding red ribbons to the production images on the Production Index page, similar to the ones on the home page, except for the fact that they will be located on the lower right corner of an image, rather than on the upper right corner.  For the production that is currently playing, the ribbon will say "Onstage".  For the productions that will play in the future, their ribbons will say "Coming Soon".  For all other productions the ribbons should not be visible.  You can make the ribbon background color slightly transparent.  The result will look like this:
 
+![prod-index-ribbon-coming-soon-sample.png](prod-index-ribbon-coming-soon-sample.png)
+
 **Solution:**
 In Views/Productions/Index.cshtml
 
@@ -110,4 +112,7 @@ In Content/site.css
 }
 /* END Production Index Ribbon styles */
 ```
+
+![prod-index-ribbon-coming-soon.png](prod-index-ribbon-coming-soon.png)
+
 ---
