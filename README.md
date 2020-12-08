@@ -1,15 +1,32 @@
 # MVC Live Project
 
+As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local theater group. The project was an ASP.NET MVC web application hosted on Azure. Here are the stories I worked on and my solutions.
+
 ### Restrict Access to Productions Delete Page
 If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
 **Solution:** 
-In Controllers/ProductionsController.cs
-
-Add Data Annotation to the GET form of Delete()
+The relevant code was in `Controllers/ProductionsController.cs`:
 ```c#
 // GET: Productions/Delete/5
-[Authorize(Roles = "Admin")]
+public ActionResult Delete(int? id)
+{
+    if (id == null)
+    {
+        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+    }
+    Production production = db.Productions.Find(id);
+    if (production == null)
+    {
+        return HttpNotFound();
+    }
+    return View(production);
+}
+```
+My inital idea was to add a test inside the function to see if the user was logged in as Admin. This possibly messy fix was obviated thanks to a helpful suggestion that I look into data annotations. A quick search resulted in a much more elegant solution: adding a single data annotation validator attribute. Problem solved.
+```c#
+// GET: Productions/Delete/5
+[Authorize(Roles = "Admin")]	// Prevent anyone but Admin from deleting
 public ActionResult Delete(int? id)
 {
     ...
