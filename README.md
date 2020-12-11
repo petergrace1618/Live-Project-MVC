@@ -83,11 +83,11 @@ In Views/Productions/Index.cshtml
 
 ```c#
 <div class="prod-index-ribbon-parent">
-<a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
-  <img class="card-img-top production-index-img bg-black" 
-       src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" 
-       alt="Card image cap">
-  <div class="prod-index-ribbon">
+  <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
+    <img class="card-img-top production-index-img bg-black" 
+         src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" 
+         alt="Card image cap">
+    <div class="prod-index-ribbon">
 	@if (item.IsCurrent)
 	{
 	  @: Onstage
@@ -96,16 +96,33 @@ In Views/Productions/Index.cshtml
 	{
 	  @: Coming Soon
 	}
-  </div>
-</a>
+    </div>
+  </a>
 </div>
 ```
 
-Set the top to coincide with the bottom of its parent.
-Set the right edge flush with right edge of parent.
-Rotate counter-clockwise 45 degrees pivoting at top left corner.
-The horizontal distance between top right corner of ribbon and right edge of parent is now equal to `width - width * cos(45deg)`.
+- Position ribbon so that its top edge coincides with the bottom edge of its parent.
 
+		top: 100%;
+
+- Position ribbon so that its right edge coincides with the right edge of its parent.
+
+		right: 0;
+
+- Rotate ribbon counter-clockwise 45 degrees pivoting at top left corner.
+
+		transform-origin: top left;
+		transform: rotate(-45deg);
+
+- Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
+	
+		width - width * cos(45deg)
+	
+- Position ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
+
+		right: calc(var(--ribbon-width) * -293);
+
+Putting it all together:
 
 ```css
 /* BEGIN Production Index ribbon styles */
