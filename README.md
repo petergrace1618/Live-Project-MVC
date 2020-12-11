@@ -104,15 +104,21 @@ In Views/Productions/Index.cshtml
 - Position ribbon so that its top edge coincides with the bottom edge of its parent.
 
 		top: 100%;
+		
+		![position-ribbon-1.png](position-ribbon-1.png)
 
 - Position ribbon so that its right edge coincides with the right edge of its parent.
 
 		right: 0;
 
+		![position-ribbon-1.png](position-ribbon-2.png)
+
 - Rotate ribbon counter-clockwise 45 degrees pivoting at top left corner.
 
 		transform-origin: top left;
 		transform: rotate(-45deg);
+
+		![position-ribbon-1.png](position-ribbon-3.png)
 
 - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
@@ -121,6 +127,8 @@ In Views/Productions/Index.cshtml
 - Position ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
 		right: calc(var(--ribbon-width) * -293);
+
+		![position-ribbon-1.png](position-ribbon-4.png)
 
 Putting it all together:
 
