@@ -101,7 +101,11 @@ In Views/Productions/Index.cshtml
 </div>
 ```
 
-In Content/site.css
+Set the top to coincide with the bottom of its parent.
+Set the right edge flush with right edge of parent.
+Rotate counter-clockwise 45 degrees pivoting at top left corner.
+The horizontal distance between top right corner of ribbon and right edge of parent is now equal to `width - width * cos(45deg)`.
+
 
 ```css
 /* BEGIN Production Index ribbon styles */
@@ -112,15 +116,17 @@ In Content/site.css
 .prod-index-ribbon {
     position: absolute;
     opacity: 0.8;
-    width: 10em;
     text-align: center;
     background-color: var(--main-bg-color);
     color: var(--light-color);
     transform-origin: top left;
     transform: rotate(-45deg);
+    --ribbon-width: 10em;
+    width: var(ribbon-width) 
     /* right = -width * (1 - cos(45deg))
        If width is changed, right must be recalculated */
     right: -3em;
+    right: calc()
     top: 100%;
 }
 /* END Production Index Ribbon styles */
