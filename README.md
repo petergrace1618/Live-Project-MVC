@@ -79,8 +79,16 @@ For this story you will be adding red ribbons to the production images on the Pr
 ![prod-index-ribbon-coming-soon-sample.png](prod-index-ribbon-coming-soon-sample.png)
 
 **Solution:**
-In Views/Productions/Index.cshtml
 
+From the starting point:
+```c#
+<a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
+  <img class="card-img-top production-index-img bg-black" 
+       src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" 
+       alt="Card image cap">
+</a>
+```
+I added a sibling to img element to contain the ribbon text, and a containing div to serve as the parent
 ```c#
 <div class="prod-index-ribbon-parent">
   <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
