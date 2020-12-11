@@ -123,14 +123,16 @@ In Views/Productions/Index.cshtml
 - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
 		width - width * cos(45deg)
+		
+	![position-ribbon-3a.png](position-ribbon-3a.png)
 	
 - Position ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
-		right: calc(var(--ribbon-width) * -293);
+		right: calc(var(--ribbon-width) * -0.293);
 
 	![position-ribbon-4.png](position-ribbon-4.png)
 
-- Hide the overflow. 
+- Clip the portion of the ribbon that extends past the edges of the parent.
 
 		overflow: hidden;
 		
