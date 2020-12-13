@@ -76,7 +76,7 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 
 For this story you will be adding red ribbons to the production images on the Production Index page, similar to the ones on the home page, except for the fact that they will be located on the lower right corner of an image, rather than on the upper right corner.  For the production that is currently playing, the ribbon will say "Onstage".  For the productions that will play in the future, their ribbons will say "Coming Soon".  For all other productions the ribbons should not be visible.  You can make the ribbon background color slightly transparent.  The result will look like this:
 
-![prod-index-ribbon-coming-soon-sample.png](prod-index-ribbon-coming-soon-sample.png)
+![imgs/prod-index-ribbon-coming-soon-sample.png](imgs/prod-index-ribbon-coming-soon-sample.png)
 
 **Solution:**
 
@@ -113,38 +113,38 @@ I added a sibling to img element to contain the ribbon text, and a containing di
 
 		top: 100%;
 		
-	![position-ribbon-1.png](position-ribbon-1.png)
+	![imgs/position-ribbon-1.png](imgs/position-ribbon-1.png)
 
 - Position ribbon so that its right edge coincides with the right edge of its parent.
 
 		right: 0;
 
-	![position-ribbon-2.png](position-ribbon-2.png)
+	![imgs/position-ribbon-2.png](imgs/position-ribbon-2.png)
 
 - Rotate ribbon counter-clockwise 45 degrees pivoting at top left corner.
 
 		transform-origin: top left;
 		transform: rotate(-45deg);
 
-	![position-ribbon-3.png](position-ribbon-3.png)
+	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
 - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
 		width - width * cos(45deg)
 		
-	![position-ribbon-3a.png](position-ribbon-3a.png)
+	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
 	
 - Position ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
 		right: calc(var(--ribbon-width) * -0.293);
 
-	![position-ribbon-4.png](position-ribbon-4.png)
+	![imgs/position-ribbon-4.png](imgs/position-ribbon-4.png)
 
 - Clip the portion of the ribbon that extends past the edges of the parent.
 
 		overflow: hidden;
 		
-	![position-ribbon-5.png](position-ribbon-5.png)
+	![imgs/position-ribbon-5.png](imgs/position-ribbon-5.png)
 
 Putting it all together:
 
@@ -173,6 +173,6 @@ Putting it all together:
 /* END Production Index Ribbon styles */
 ```
 
-![prod-index-ribbon-coming-soon.png](prod-index-ribbon-coming-soon.png)
+![imgs/prod-index-ribbon-coming-soon.png](imgs/prod-index-ribbon-coming-soon.png)
 
 ---
