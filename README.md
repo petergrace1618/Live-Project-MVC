@@ -5,9 +5,7 @@ As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local th
 ### Story 1: Restrict Access to Productions Delete Page
 > If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if  they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
-**Solution:** 
-
-The relevant code was in Productions controller:
+_Sounds simple enough. Just add some logic inside the method to see if the user is logged in as Admin,_ I thought as I assigned the story to myself. But first I had to locate the relevant code. In this case it was in the Productions controller:
 
 ```c#
 // GET: Productions/Delete/5
@@ -26,15 +24,14 @@ public ActionResult Delete(int? id)
 }
 ```
 
-My inital idea was to add some logic inside the function to see if the user was logged in as Admin. This possibly messy fix was obviated thanks to a helpful suggestion that I look into data annotations. A quick search resulted in a much more elegant solution: adding a single data annotation validator attribute.
+Before I could start researching my idea, I received a helpful suggestion to look into data annotations. A quick search resulted in a much simpler solution (and much more sleek, I might add): a single data annotation validator attribute.
+
+**Solution:**
 
 ```c#
 [Authorize(Roles = "Admin")]	// Prevent anyone but Admin from deleting
 public ActionResult Delete(int? id)
 ```
-
-Problem solved.
-
 ---
 ### Story 2: Production Details - Consolidate Links
 > At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
@@ -43,18 +40,38 @@ Problem solved.
 >
 > Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
 
+**Problem:**
+
+In the Production Details view: 
+
+```c#
+@if (ViewContext.HttpContext.User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ProductionId }) |
+    </p>
+}
+<p>
+    @Html.ActionLink("Current Productions", "Current") |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+```
+
 **Solution:**
+
+After my trial-and-error approach involving various arrangements and orderings of HTML and Razor was unsuccessful, I reached out to a peer and received another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs led to another simple solution. Explicit line transitions using the `@:` syntax.
+
 ```c#
 // "@:" renders rest of line as HTML. 
-// https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#razor-code-blocks
-<div>
+// https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#explicit-line-transition
+<p>
   @if (ViewContext.HttpContext.User.IsInRole("Admin"))
   {
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProductionId }) @:|
   }
-    @Html.ActionLink("Current Productions", "Current") |
-    @Html.ActionLink("Back to List", "Index")
-</div>
+  @Html.ActionLink("Current Productions", "Current") |
+  @Html.ActionLink("Back to List", "Index")
+</p>
 ```
 ---
 
