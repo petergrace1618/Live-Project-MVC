@@ -40,9 +40,7 @@ public ActionResult Delete(int? id)
 >
 > Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
 
-**Problem:**
-
-In the Production Details view: 
+The relevant code for this one was in the Production Details view: 
 
 ```c#
 @if (ViewContext.HttpContext.User.IsInRole("Admin"))
@@ -57,13 +55,13 @@ In the Production Details view:
 </p>
 ```
 
+_That's why the "Edit" text is on a separate line: it's inside a `<p>` element. Move the opening `<p>` tag outside the `@if` block, delete the first `</p>` and second `<p>` and ... DRATS! I broke it!_
+
+After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reached out to a peer and received another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs led to another simple solution. And a reminder of something I've learned after many years of coding: If it's not working, it's probably because I'm missing something. A comma, a semi-colon, or in this case knowledge. In particular of explicit line transitions using the `@:` syntax.
+
 **Solution:**
 
-After my trial-and-error approach involving various arrangements and orderings of HTML and Razor was unsuccessful, I reached out to a peer and received another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs led to another simple solution. Explicit line transitions using the `@:` syntax.
-
 ```c#
-// "@:" renders rest of line as HTML. 
-// https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#explicit-line-transition
 <p>
   @if (ViewContext.HttpContext.User.IsInRole("Admin"))
   {
