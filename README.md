@@ -76,13 +76,30 @@ After an unsuccessful trial-and-error approach involving various arrangements an
 ### Story 3: Fix Duplicating Awards Seeding
 > When you run the project, the SeedAwards method in the Startup file seeds the database with Awards.  However, if you run the project again, those same Awards are added to the database again.  Find out why the Awards are being duplicated every time the project is run and implement your solution.
 
+The offending code:
+
+```c#
+private void SeedAwards()
+{
+    var awards = new List<Award>
+    {
+        ...
+    };
+    
+    awards.ForEach(award => context.Awards.AddOrUpdate(a => a.AwardId, award));
+    context.SaveChanges();
+}
+```
+
+I surmise that the culprit must be hiding somewhere in the last two lines of the method. After some sleuthing and pondering, I further surmise that the duplicate seed records are caused by the use of the `AwardId` property in `AddOrUpdate()`. What follows is my reasoning. 
+
+- When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the DB upon insertion, i.e. after the `SaveChanges()` method executes. 
+- Since `AwardId` is not known the object will always not be found, and therefore will always be added. 
+- In the other seed methods, the calls to `AddOrUpdate()` refer to a field that acts as an alternate key thus uniquely identifying the record. 
+- The `Awards` table doesn't have a single alternate key. Instead the compound key `(Year, Name, Type, Category)` serves as an alternate key. 
+
 **Solution:**
 
-The following line is the culprit.
-```c#
-awards.ForEach(award => context.Awards.AddOrUpdate(aw => aw.AwardId, award));
-```
-It produces duplicate seed records every time the program is run because of the use of AwardId in AddOrUpdate(). When an Award object is instantiated, AwardId is not yet known because its value is set by the DB upon insertion. Hence, the object will always not be found, and therefore will always be added. Whereas, in the other seed methods the calls to AddOrUpdate() refer to a table column that acts as an alternate key that uniquely identifies the record. In the Awards table the compound key (Year, Name, Type, Category) serves as an alternate key.
 ```c#
 awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.Type, a.Category }, award));
 ```
@@ -94,9 +111,7 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 >
 > ![imgs/prod-index-ribbon-coming-soon-sample.png](imgs/prod-index-ribbon-coming-soon-sample.png)
 
-**Solution:**
-
-From the starting point:
+My starting point:
 
 ```c#
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
@@ -127,7 +142,6 @@ First I added the necessary HTML and Razor code. a sibling to img element to con
   </a>
 </div>
 ```
-
 
 - I positioned ribbon so that its top edge coincides with the bottom edge of its parent.
 
@@ -184,14 +198,14 @@ Putting it all together:
     transform: rotate(-45deg);
     --ribbon-width: 10em;
     width: var(ribbon-width) 
-    /* right = -width * (1 - cos(45deg))
-       If width is changed, right must be recalculated */
     right: -3em;
     right: calc()
     top: 100%;
 }
 /* END Production Index Ribbon styles */
 ```
+
+**Solution:**
 
 ![imgs/prod-index-ribbon-coming-soon.png](imgs/prod-index-ribbon-coming-soon.png)
 
