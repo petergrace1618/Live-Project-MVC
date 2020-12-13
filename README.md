@@ -2,8 +2,8 @@
 
 As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local theater group. The Agile project was an ASP.NET MVC web application hosted on Azure. Here are the stories I worked on and my solutions.
 
-### Restrict Access to Productions Delete Page
-If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
+### Story 1: Restrict Access to Productions Delete Page
+> If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if  they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
 **Solution:** 
 
@@ -24,7 +24,9 @@ public ActionResult Delete(int? id)
     return View(production);
 }
 ```
-My inital idea was to add a test inside the function to see if the user was logged in as Admin. This possibly messy fix was obviated thanks to a helpful suggestion that I look into data annotations. A quick search resulted in a much more elegant solution: adding a single data annotation validator attribute. Problem solved.
+
+My inital idea was to add some logic inside the function to see if the user was logged in as Admin. This possibly messy fix was obviated thanks to a helpful suggestion that I look into data annotations. A quick search resulted in a much more elegant solution: adding a single data annotation validator attribute. Problem solved.
+
 ```c#
 // GET: Productions/Delete/5
 [Authorize(Roles = "Admin")]	// Prevent anyone but Admin from deleting
@@ -34,13 +36,12 @@ public ActionResult Delete(int? id)
 }
 ```
 ---
-
-### Production Details - Consolidate Links
-At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
-
-`Edit | Current Productions | Back to List`
-
-Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
+### Story 2: Production Details - Consolidate Links
+> At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
+>
+> `Edit | Current Productions | Back to List`
+>
+> Please consolidate these links into a single line.  When you log out as an admin, "Edit | " should gracefully disappear.
 
 **Solution:**
 ```c#
@@ -57,8 +58,8 @@ Please consolidate these links into a single line.  When you log out as an admin
 ```
 ---
 
-### Fix Duplicating Awards Seeding
-When you run the project, the SeedAwards method in the Startup file seeds the database with Awards.  However, if you run the project again, those same Awards are added to the database again.  Find out why the Awards are being duplicated every time the project is run and implement your solution.
+### Story 3: Fix Duplicating Awards Seeding
+> When you run the project, the SeedAwards method in the Startup file seeds the database with Awards.  However, if you run the project again, those same Awards are added to the database again.  Find out why the Awards are being duplicated every time the project is run and implement your solution.
 
 **Solution:**
 
@@ -72,15 +73,16 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 ```
 ---
 
-### Production Index - Production Ribbons
+### Story 4: Production Index - Production Ribbons
 
-For this story you will be adding red ribbons to the production images on the Production Index page, similar to the ones on the home page, except for the fact that they will be located on the lower right corner of an image, rather than on the upper right corner.  For the production that is currently playing, the ribbon will say "Onstage".  For the productions that will play in the future, their ribbons will say "Coming Soon".  For all other productions the ribbons should not be visible.  You can make the ribbon background color slightly transparent.  The result will look like this:
-
-![imgs/prod-index-ribbon-coming-soon-sample.png](imgs/prod-index-ribbon-coming-soon-sample.png)
+> For this story you will be adding red ribbons to the production images on the Production Index page, similar to the ones on the home page, except for the fact that they will be located on the lower right corner of an image, rather than on the upper right corner.  For the production that is currently playing, the ribbon will say "Onstage".  For the productions that will play in the future, their ribbons will say "Coming Soon".  For all other productions the ribbons should not be visible.  You can make the ribbon background color slightly transparent.  The result will look like this:
+>
+> ![imgs/prod-index-ribbon-coming-soon-sample.png](imgs/prod-index-ribbon-coming-soon-sample.png)
 
 **Solution:**
 
 From the starting point:
+
 ```c#
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" 
@@ -88,7 +90,9 @@ From the starting point:
        alt="Card image cap">
 </a>
 ```
-I added a sibling to img element to contain the ribbon text, and a containing div to serve as the parent
+
+First I added the necessary HTML and Razor code. a sibling to img element to contain the ribbon text, and a containing div to serve as the parent
+
 ```c#
 <div class="prod-index-ribbon-parent">
   <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
@@ -109,38 +113,39 @@ I added a sibling to img element to contain the ribbon text, and a containing di
 </div>
 ```
 
-- Position ribbon so that its top edge coincides with the bottom edge of its parent.
+
+- I positioned ribbon so that its top edge coincides with the bottom edge of its parent.
 
 		top: 100%;
 		
 	![imgs/position-ribbon-1.png](imgs/position-ribbon-1.png)
 
-- Position ribbon so that its right edge coincides with the right edge of its parent.
+- I positioned ribbon so that its right edge coincides with the right edge of its parent.
 
 		right: 0;
 
 	![imgs/position-ribbon-2.png](imgs/position-ribbon-2.png)
 
-- Rotate ribbon counter-clockwise 45 degrees pivoting at top left corner.
+- Rotated ribbon counter-clockwise 45 degrees pivoting at top left corner.
 
 		transform-origin: top left;
 		transform: rotate(-45deg);
 
 	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
-- Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
+- Calculated the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
 		width - width * cos(45deg)
 		
 	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
 	
-- Position ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
+- Positioned ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
 		right: calc(var(--ribbon-width) * -0.293);
 
 	![imgs/position-ribbon-4.png](imgs/position-ribbon-4.png)
 
-- Clip the portion of the ribbon that extends past the edges of the parent.
+- Clipped the portion of the ribbon that extends past the edges of the parent.
 
 		overflow: hidden;
 		
