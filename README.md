@@ -57,7 +57,7 @@ The relevant code for this one is in the Production Details view:
 
 At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. I move the opening `p` tag outside the `@if` block, delete the first closing `p` and second opening `p` and ... _DRATS! I broke it!_
 
-After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution, and I'm reminded of something I've learned after many years of coding: If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) In this particular case, it's knowledge of explicit line transitions using the `@:` syntax.
+After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution, and I'm reminded of something I've learned throughout my experience as a programmer: If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) In this particular case, it's knowledge of explicit line transitions using the `@:` syntax.
 
 **Solution:**
 
