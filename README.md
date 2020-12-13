@@ -7,7 +7,8 @@ As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local th
 
 **Solution:** 
 
-The pertinent code was in `Controllers/ProductionsController.cs`:
+The relevant code was in Productions controller:
+
 ```c#
 // GET: Productions/Delete/5
 public ActionResult Delete(int? id)
@@ -26,15 +27,14 @@ public ActionResult Delete(int? id)
 ```
 
 My inital idea was to add some logic inside the function to see if the user was logged in as Admin. This possibly messy fix was obviated thanks to a helpful suggestion that I look into data annotations. A quick search resulted in a much more elegant solution: adding a single data annotation validator attribute.
+
 ```c#
-// GET: Productions/Delete/5
 [Authorize(Roles = "Admin")]	// Prevent anyone but Admin from deleting
 public ActionResult Delete(int? id)
-{
-    ...
-}
 ```
+
 Problem solved.
+
 ---
 ### Story 2: Production Details - Consolidate Links
 > At the bottom of the Production Details page, if you log in as an admin, you'll notice that a link "Edit | " appears on its own line.  That Edit link is supposed to be on the same line as the other links, like this,
