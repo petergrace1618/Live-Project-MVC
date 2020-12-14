@@ -187,19 +187,18 @@ and then I position the ribbon in the following steps.
 
 	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
-- Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
-    - After rotating, the horizontal distance from the top left corner to the top right corner is `width * cos(45deg)`, so from the top right corner to the right edge of parent is `width - width * cos(45deg)`.
-    -  Substituting the actual value of cosine, flipping the sign of the expression (using the `right` property to move right means the value must be negative), and simplifying algebraically gives 
-
-	```
-	width * -0.293
-	```
+- Make its top right corner coincide with right edge of parent. 
+    - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 
 	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
-	
-- Make its top right corner coincide with right edge of parent. 
+
+    - After rotation, the horizontal distance from the top left corner to the top right corner is `width * cos(45deg)`, so from the top right corner to the right edge of parent is `width - width * cos(45deg)`.
+    - Substituting the actual value of cosine, flipping the sign of the expression (using the `right` property to move right means the value must be negative), and simplifying algebraically gives `width * -0.293`.
+    - Create a custom CSS property to store the width of the ribbon.
 
 	```css
+	--ribbon-width: 10em;
+	width: var(--ribbon-width);
 	right: calc(var(--ribbon-width) * -0.293);
 	```
 
