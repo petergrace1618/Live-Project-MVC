@@ -112,9 +112,9 @@ awards.ForEach(award => context.Awards.AddOrUpdate(a => new { a.Year, a.Name, a.
 >
 > ![imgs/prod-index-ribbon-coming-soon-sample.png](imgs/prod-index-ribbon-coming-soon-sample.png)
 
-My starting point:
+My starting point is in the Production Index view:
 
-```c#
+```html
 <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
   <img class="card-img-top production-index-img bg-black" 
        src="@Url.Action("DisplayPhoto", "Photo", new { id = item.DefaultPhoto.PhotoId })" 
@@ -122,9 +122,9 @@ My starting point:
 </a>
 ```
 
-First I added the necessary HTML and Razor code. a sibling to img element to contain the ribbon text, and a containing div to serve as the parent
+In order to superimpose the ribbon over the image, I need to add an element that's a sibling of the `img`; this will contain the ribbon markup and logic to determine the necessary text if any. Then I wrap all of it in a `div` and add class names so I can target them in CSS. 
 
-```c#
+```html
 <div class="prod-index-ribbon-parent">
   <a href="@Url.Action("Details", "Productions", new { id = item.ProductionId })">
     <img class="card-img-top production-index-img bg-black" 
@@ -144,38 +144,41 @@ First I added the necessary HTML and Razor code. a sibling to img element to con
 </div>
 ```
 
-- I positioned ribbon so that its top edge coincides with the bottom edge of its parent.
+Then I position the ribbon in the following steps.
+
+- Make its top edge coincide with the bottom edge of its parent.
 
 		top: 100%;
 		
 	![imgs/position-ribbon-1.png](imgs/position-ribbon-1.png)
 
-- I positioned ribbon so that its right edge coincides with the right edge of its parent.
+- Make its right edge coincide with the right edge of its parent.
 
 		right: 0;
 
 	![imgs/position-ribbon-2.png](imgs/position-ribbon-2.png)
 
-- Rotated ribbon counter-clockwise 45 degrees pivoting at top left corner.
+- Rotate it counter-clockwise 45 degrees pivoting at top left corner.
 
 		transform-origin: top left;
 		transform: rotate(-45deg);
 
 	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
-- Calculated the horizontal distance between the top right corner of ribbon and right edge of parent. 
+- Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
 		width - width * cos(45deg)
 		
 	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
 	
-- Positioned ribbon so that its top right corner coincides with right edge of parent. (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
+- Make its top right corner coincide with right edge of parent. 
+    - (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
 		right: calc(var(--ribbon-width) * -0.293);
 
 	![imgs/position-ribbon-4.png](imgs/position-ribbon-4.png)
 
-- Clipped the portion of the ribbon that extends past the edges of the parent.
+- Clip the portion of the ribbon that extends past the edges of the parent.
 
 		overflow: hidden;
 		
