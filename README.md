@@ -228,12 +228,12 @@ Putting it all together:
     text-align: center;
     background-color: var(--main-bg-color);
     color: var(--light-color);
+    top: 100%;
     transform-origin: top left;
     transform: rotate(-45deg);
     --ribbon-width: 10em;
     width: var(--ribbon-width);
     right: calc(var(--ribbon-width * -0.293);
-    top: 100%;
 }
 ```
 
