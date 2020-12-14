@@ -122,7 +122,7 @@ My starting point is in the Production Index view:
 </a>
 ```
 
-In order to superimpose the ribbon over the image, I need to add an element that's a sibling of the `img`; this will contain the ribbon markup and logic to determine the necessary text if any. Then I wrap all of it in a `div` and add class names so I can target them in CSS. 
+In order to superimpose the ribbon over the image, I need to add an element that's a sibling of `img`; this will contain the ribbon markup and logic to determine the appropriate text if any. Then I wrap all of it in a `div` and add class names so I can target them in CSS. 
 
 ```html
 <div class="prod-index-ribbon-parent">
@@ -144,7 +144,23 @@ In order to superimpose the ribbon over the image, I need to add an element that
 </div>
 ```
 
-Then I position the ribbon in the following steps.
+I set some preliminary styling, 
+
+```css
+.prod-index-ribbon-parent {
+    position: relative;
+}
+.prod-index-ribbon {
+    position: absolute;
+    opacity: 0.8;
+    text-align: center;
+    background-color: var(--main-bg-color);
+    color: var(--light-color);
+    width: 10em;
+}
+```
+
+and then I position the ribbon in the following steps.
 
 - Make its top edge coincide with the bottom edge of its parent.
 
@@ -172,15 +188,16 @@ Then I position the ribbon in the following steps.
 	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
 - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
-	
-	```css
-	width - width * cos(45deg)
+    - After rotating, the horizontal distance from the top left corner to the top right corner is `width * cos(45deg)`, so from the top right corner to the right edge of parent is `width - width * cos(45deg)`.
+    -  Substituting the actual value of cosine, flipping the sign of the expression (using the `right` property to move right means the value must be negative), and simplifying algebraically gives 
+    
+        ```
+	width * -0.293
 	```
-		
+			
 	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
 	
 - Make its top right corner coincide with right edge of parent. 
-    - (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
 	```css
 	right: calc(var(--ribbon-width) * -0.293);
@@ -198,8 +215,10 @@ Then I position the ribbon in the following steps.
 
 Putting it all together:
 
+**Solution:**
+
+
 ```css
-/* BEGIN Production Index ribbon styles */
 .prod-index-ribbon-parent {
     position: relative;
     overflow: hidden;
@@ -213,15 +232,11 @@ Putting it all together:
     transform-origin: top left;
     transform: rotate(-45deg);
     --ribbon-width: 10em;
-    width: var(ribbon-width) 
-    right: -3em;
-    right: calc()
+    width: var(--ribbon-width);
+    right: calc(var(--ribbon-width * -0.293);
     top: 100%;
 }
-/* END Production Index Ribbon styles */
 ```
-
-**Solution:**
 
 ![imgs/prod-index-ribbon-coming-soon.png](imgs/prod-index-ribbon-coming-soon.png)
 
