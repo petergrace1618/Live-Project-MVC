@@ -156,33 +156,43 @@ Then I position the ribbon in the following steps.
 
 - Make its right edge coincide with the right edge of its parent.
 
-		right: 0;
+	```css
+	right: 0;
+	```
 
 	![imgs/position-ribbon-2.png](imgs/position-ribbon-2.png)
 
 - Rotate it counter-clockwise 45 degrees pivoting at top left corner.
 
-		transform-origin: top left;
-		transform: rotate(-45deg);
+	```css
+	transform-origin: top left;
+	transform: rotate(-45deg);
+	```
 
 	![imgs/position-ribbon-3.png](imgs/position-ribbon-3.png)
 
 - Calculate the horizontal distance between the top right corner of ribbon and right edge of parent. 
 	
-		width - width * cos(45deg)
+	```css
+	width - width * cos(45deg)
+	```
 		
 	![imgs/position-ribbon-3a.png](imgs/position-ribbon-3a.png)
 	
 - Make its top right corner coincide with right edge of parent. 
     - (Using the `right` property means we go in the negative direction. Simplifying algebraically and substituting the actual value of cosine gives `width * -0.293`.)
 
-		right: calc(var(--ribbon-width) * -0.293);
+	```css
+	right: calc(var(--ribbon-width) * -0.293);
+	```
 
 	![imgs/position-ribbon-4.png](imgs/position-ribbon-4.png)
 
 - Clip the portion of the ribbon that extends past the edges of the parent.
 
-		overflow: hidden;
+	```css
+	overflow: hidden;
+	```
 		
 	![imgs/position-ribbon-5.png](imgs/position-ribbon-5.png)
 
