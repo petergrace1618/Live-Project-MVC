@@ -122,7 +122,7 @@ My starting point is in the Production Index view:
 </a>
 ```
 
-In order to superimpose the ribbon over the image, I need to add an element that's a sibling of `img`; this will contain the ribbon markup and logic to determine the appropriate text if any. Then I wrap all of it in a `div` and add class names so I can target them in CSS. 
+In order to superimpose the ribbon over the image, I need to add an element that's a sibling of `<img>`; this will contain the ribbon markup and logic to determine the appropriate text if any. Then I wrap all of it in a `<div>` and add class names so I can target them in CSS. 
 
 ```html
 <div class="prod-index-ribbon-parent">
