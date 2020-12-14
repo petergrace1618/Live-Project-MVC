@@ -5,7 +5,7 @@ As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local th
 ### Story 1: Restrict Access to Productions Delete Page
 > If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if  they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
-_Sounds simple enough. Just add some logic inside the method to see if the user is logged in as Admin,_ I thought as I assigned the story to myself. First, to locate the relevant code. In this case it was in the Productions controller:
+My initial thought was to add some logic inside the method to see if the user is logged in as Admin. The method was located in the Productions controller:
 
 ```c#
 // GET: Productions/Delete/5
@@ -24,7 +24,7 @@ public ActionResult Delete(int? id)
 }
 ```
 
-Before I could start researching my idea, I received a helpful suggestion to look into data annotations. A quick search resulted in a much simpler solution (and much more sleek, I might add): a single data annotation validator attribute.
+Before I could start researching my idea however, I received a helpful suggestion to look into data annotations. A little research on the Microsoft documentation and I found the answer: a single data annotation validator attribute. Same idea but without the messy logic.
 
 **Solution:**
 
@@ -40,7 +40,7 @@ public ActionResult Delete(int? id)
 >
 > Please consolidate these links into a single line.  When you log out as an admin, `"Edit | "` should gracefully disappear.
 
-I find the relevant code for this one in the Production Details view: 
+The relevant code for this one is in the Production Details view: 
 
 ```c#
 @if (ViewContext.HttpContext.User.IsInRole("Admin"))
@@ -55,9 +55,11 @@ I find the relevant code for this one in the Production Details view:
 </p>
 ```
 
-At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. I move the opening `p` tag outside the `@if` block, delete the first closing `p` and second opening `p` and ... _DRATS! I broke it!_
+At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. I move the opening `p` tag outside the `@if` block, delete the first closing `p` and second opening `p`, and _Presto!_ I get a compilation error.
 
 After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution and reinforces something I've learned throughout my experience as a programmer: If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) In this particular case, it's knowledge of explicit line transitions using the `@:` syntax.
+
+More specifically, because the `|` character is inside a code block, the compiler interprets it as part of a C# expression. Using `@:` tells the compiler to render everything after it as HTML. 
 
 **Solution:**
 
@@ -91,14 +93,11 @@ private void SeedAwards()
 }
 ```
 
-I have a hunch that the culprit must be hiding somewhere in the last two lines of the method. The last line looks innocent enough, at least. 
-After some sleuthing and pondering, I further surmise that the duplicate seed records are caused by the use of the `AwardId` property in `AddOrUpdate()`. What follows is my reasoning. 
+My hunch is that the culprit must be hiding somewhere in the last two lines of the method. The last line looks innocent enough, but you never know. I check out the other seed methods to get some clues. I see that the calls to `AddOrUpdate()` in the other seed methods don't reference the primary key (`ProductionId`, `CastMemberId`, etc.) but instead reference a field that acts as an alternate key (`Title`, `Name`, etc.). And then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records. 
 
-- When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the DB upon insertion, i.e. after the `SaveChanges()` method executes. 
-- Since `AwardId` is not known, the object will always not be found, and therefore will always be added. 
-- In the other seed methods, the calls to `AddOrUpdate()` refer to a field that acts as an alternate key thus uniquely identifying the record. 
-- The `Awards` table doesn't have a single alternate key. Instead the compound key `(Year, Name, Type, Category)` serves as an alternate key. 
-
+Here's the lowdown. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the DB only after it's saved. `SaveChanges()` was innocent all along! Since `AwardId` is not known, the object will always not be found, and therefore will always be added. 
+ 
+But here's the pinch. The `Awards` table doesn't have a field that by itself can be used as an alternate key. Instead the compound key `(Year, Name, Type, Category)` serves as an alternate key. Case closed.
 
 **Solution:**
 
