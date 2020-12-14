@@ -55,7 +55,7 @@ The relevant code for this one is in the Production Details view:
 </p>
 ```
 
-At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. So I move the opening `p` tag outside the `@if` block, delete the first closing `p` and second opening `p`, and _Presto!_ I get a compilation error.
+At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. So I move the first `<p>` outside the `@if` block, delete the `</p>` and second `<p>`, and _Presto!_ I get a compilation error.
 
 After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution and reinforces something I've learned throughout my experience as a programmer: If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) In this particular case, it's knowledge of explicit line transitions using the `@:` syntax.
 
