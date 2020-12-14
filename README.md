@@ -1,4 +1,4 @@
-# MVC Live Project
+# MVC Live Project Code Summary
 
 As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local theater group. The Agile project was an ASP.NET MVC web application hosted on Azure. Here are the stories I worked on and my solutions.
 
