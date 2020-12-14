@@ -148,9 +148,9 @@ Then I position the ribbon in the following steps.
 
 - Make its top edge coincide with the bottom edge of its parent.
 
-```css
-top: 100%;
-```
+	```css
+	top: 100%;
+	```
 		
 	![imgs/position-ribbon-1.png](imgs/position-ribbon-1.png)
 
