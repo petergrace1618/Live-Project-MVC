@@ -212,8 +212,6 @@ and then I position the ribbon in the following steps.
 		
 	![imgs/position-ribbon-5.png](imgs/position-ribbon-5.png)
 
-Putting it all together:
-
 **Solution:**
 
 
