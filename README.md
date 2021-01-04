@@ -93,11 +93,21 @@ private void SeedAwards()
 }
 ```
 
-My hunch is that the culprit must be hiding somewhere in the last two lines of the method. The last line looks innocent enough, but you never know. I check out the other seed methods to get some clues. I see that the calls to `AddOrUpdate()` in the other seed methods don't reference the primary key (`ProductionId`, `CastMemberId`, you name it) but instead reference a field that acts as an alternate key (`Title`, `Name`, you get the drift). And then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records. 
+I suspect that the culprit is hiding somewhere in the last two lines. I gather some clues by inspecting the corresponding lines in the other seed methods.
 
-Here's the lowdown. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the DB only after it's saved. `SaveChanges()` was innocent all along! Since `AwardId` is not known, the object will always not be found, and therefore will always be added. 
- 
-But here's the pinch. The `Awards` table doesn't have a field that by itself can be used as an alternate key. But I can use the compound key `(Year, Name, Type, Category)` to serve as an alternate key. And that's that. Case closed.
+In `SeedProductions()` I find:
+
+    productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
+
+And in `SeedCastMembers()` I find:
+
+    castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
+
+I notice these `AddOrUpdate()` calls don't reference the primary key but instead reference a field that acts as an alternate key (`d.Title`, `c.Name`). Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
+
+It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I decide to figure out what makes these Awards so unique.
+
+I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
 
 **Solution:**
 
