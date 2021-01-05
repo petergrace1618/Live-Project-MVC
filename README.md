@@ -107,7 +107,7 @@ I notice these `AddOrUpdate()` calls don't reference the primary key but instead
 
 It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I decide to figure out what makes these Awards so unique.
 
-![imgs/Awards-table-scr-shot.jpg](Awards table screen shot)
+![imgs/Awards-table-scr-shot.jpg](imgs/Awards-table-scr-shot.jpg)
 
 I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
 
