@@ -95,11 +95,11 @@ private void SeedAwards()
 
 I suspect that the culprit is hiding somewhere in the last two lines. I gather some clues by inspecting the corresponding lines in the other seed methods.
 
-In `SeedProductions()` I find:
+In `SeedProductions()`:
 
     productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
 
-And in `SeedCastMembers()` I find:
+And in `SeedCastMembers()`:
 
     castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
 
@@ -107,7 +107,17 @@ I notice these `AddOrUpdate()` calls don't reference the primary key but instead
 
 It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I decide to figure out what makes these Awards so unique.
 
+I inspect the Awards table in the database.
+
 ![imgs/Awards-table-scr-shot.jpg](imgs/Awards-table-scr-shot.jpg)
+
+Obviously, there are multiple awards given out each year, Drammy or otherwise. 
+
+The `Type` field represents the enum 
+
+```c#
+public enum AwardType { Award, Finalist, Other }
+```
 
 I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
 
