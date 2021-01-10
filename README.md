@@ -1,11 +1,11 @@
 # MVC Live Project Code Summary
 
-As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local theater group. The Agile project was an ASP.NET MVC web application hosted on Azure. Here are the stories I worked on and my solutions.
+As an intern at Prosper I.T. Consulting, I contributed to the CMS for a local theater group. The Agile project was an ASP.NET MVC web application on Azure. Here are the stories I worked on and my solutions.
 
 ### Story 1: Restrict Access to Productions Delete Page
-> If a User appends /Delete/#, where # is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if  they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
+> If a User appends `/Delete/#`, where `#` is the ID of one of the Productions, the User gets taken to that Production's Delete page.  This means that a random User, if  they are able to guess a valid ID, is currently able to delete Productions.  Fix this issue by restricting access to the Delete page so that only Users signed in as Admin can access the page.
 
-My initial thought was to add some logic inside the method to see if the user is logged in as Admin. The method was located in the Productions controller:
+The code in question is the Delete method of the Productions controller. 
 
 ```c#
 // GET: Productions/Delete/5
@@ -24,7 +24,7 @@ public ActionResult Delete(int? id)
 }
 ```
 
-Before I could start researching my idea however, I received a helpful suggestion to look into data annotations. A little research on the Microsoft documentation and I found the answer: a single data annotation validator attribute. Same idea but without the messy logic.
+My initial thought is to add some logic inside the method to see if the user is logged in as Admin. Before I can start researching my idea however, I receive a helpful suggestion to look into data annotations. A little research in the Microsoft documentation and I find the answer: a single data annotation validator attribute. Same idea but without the messy logic.
 
 **Solution:**
 
@@ -55,11 +55,13 @@ The relevant code for this one is in the Production Details view:
 </p>
 ```
 
-At first glance I see why the "Edit" text is on a separate line: it's inside a `<p>` element. So I move the first `<p>` outside the `@if` block, delete the `</p>` and second `<p>`, and _Presto!_ I get a compilation error.
+At first glance I see why the "Edit" text is on a separate line: it's inside a paragraph element. So I move the first opening `<p>` tag outside the `@if` block, delete both the closing `</p>` tag inside the `@if` block and the opening `<p>` tag after the `@if` block, and _Presto!_ I get a compilation error.
 
-After an unsuccessful trial-and-error approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution and reinforces something I've learned throughout my experience as a programmer: If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) In this particular case, it's knowledge of explicit line transitions using the `@:` syntax.
+After unsuccessfully taking a heuristic approach involving various arrangements and orderings of HTML and Razor, I reach out to a peer and receive another friendly suggestion to look into Razor code blocks. Another quick search of the Microsoft docs leads to another simple solution and reinforces something I've learned over the years as a programmer: 
 
-More specifically, because the `|` character is inside a code block, the compiler interprets it as part of a C# expression. Using `@:` tells the compiler to render everything after it as HTML. 
+If it's not working, it's probably because I'm missing something. Sometimes a comma. Sometimes a semi-colon. And sometimes knowledge. (Usually knowledge.) 
+
+In this particular case, it's knowledge of explicit line transitions using the `@:` syntax. More specifically, because the `|` character is inside a code block, the compiler interprets it as part of a C# expression. Using `@:` tells the compiler to render everything after it as HTML. 
 
 **Solution:**
 
@@ -105,19 +107,11 @@ And in `SeedCastMembers()`:
 
 I notice these `AddOrUpdate()` calls don't reference the primary key but instead reference a field that acts as an alternate key (`d.Title`, `c.Name`). Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
 
-It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I decide to figure out what makes these Awards so unique.
-
-I inspect the Awards table in the database.
+When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I inspect the Awards table to figure out what makes these Awards so unique.
 
 ![imgs/Awards-table-scr-shot.jpg](imgs/Awards-table-scr-shot.jpg)
 
-Obviously, there are multiple awards given out each year, Drammy or otherwise. 
-
-The `Type` field represents the enum 
-
-```c#
-public enum AwardType { Award, Finalist, Other }
-```
+There are multiple awards in each year. In any given year, 
 
 I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
 
