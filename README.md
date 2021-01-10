@@ -97,21 +97,17 @@ private void SeedAwards()
 
 I suspect that the culprit is hiding somewhere in the last two lines. I gather some clues by inspecting the corresponding lines in the other seed methods.
 
-In `SeedProductions()`:
+    SeedProductions(): productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
 
-    productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
+    SeedCastMembers(): castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
 
-And in `SeedCastMembers()`:
+I notice these `AddOrUpdate()` calls don't reference the primary key. I look at the `Productions` and `CastMembers` tables to get some context. I see that each of the two fields (`Title` and `Name`) serves as an alternate key for their tables. _Why wouldn't you just use to the primary key?_ I wonder. Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
 
-    castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
-
-I notice these `AddOrUpdate()` calls don't reference the primary key but instead reference a field that acts as an alternate key (`d.Title`, `c.Name`). Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
-
-When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a field that can be used as an alternate key by itself, so I inspect the Awards table to figure out what makes these Awards so unique.
+It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value is set by the database only after it's saved. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a single field that can be used as an alternate key by itself. 
 
 ![imgs/Awards-table-scr-shot.jpg](imgs/Awards-table-scr-shot.jpg)
 
-There are multiple awards in each year. In any given year, 
+Each year there are multiple awards given. In any given year, 
 
 I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
 
