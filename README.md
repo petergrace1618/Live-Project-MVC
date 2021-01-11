@@ -130,7 +130,7 @@ _And the winner of the 2015 Drammy for Best Ensemble in a Play goes to ..._
 
 I decide to go with my gut. The compound key `(Year, Name, Type, Category)` is sufficient to serve as an alternate key. 
 
-An ad hoc solution? Probably. Completely robust? Probably not. But it gets my pull request accepted. 
+An ad hoc solution? Probably. Completely robust? Probably not. But it got my pull request accepted. 
 
 Case closed.
 
