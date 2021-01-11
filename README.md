@@ -123,7 +123,7 @@ From this data and the list of [past years' Drammy award winners](https://drammy
 - There may or may not be an individual recipient of the award,
 - But there's always a Production associated with it.
 
-The question is, are the `Recipient` and `ProductionId` fields necessary to identify a record? I imagine the announcer presenting the award. 
+The question is: are the `Recipient` and `ProductionId` fields necessary to identify a record? I imagine the announcer presenting the award. 
 
 _The finalists for the 2015 Drammy for Best Ensemble in a Play are ..._ <br/>
 _And the winner of the 2015 Drammy for Best Ensemble in a Play goes to ..._
