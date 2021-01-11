@@ -95,21 +95,39 @@ private void SeedAwards()
 }
 ```
 
-I suspect that the culprit is hiding somewhere in the last two lines. I gather some clues by inspecting the corresponding lines in the other seed methods.
+I suspect one of the last two lines is the culprit. I gather some clues by inspecting the corresponding lines in the other seed methods.
 
-    SeedProductions(): productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
+```
+SeedProductions(): 
+    productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
 
-    SeedCastMembers(): castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
+SeedCastMembers(): 
+    castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
+```
 
-I notice these `AddOrUpdate()` calls don't reference the primary key. I look at the `Productions` and `CastMembers` tables to get some context. I see that each of the two fields (`Title` and `Name`) serves as an alternate key for their tables. _Why wouldn't you just use to the primary key?_ I wonder. Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
+I notice these two `AddOrUpdate()` calls don't reference the primary key like the one in `SeedAwards()` does. I look at the `Productions` and `CastMembers` tables to get some context. I see that each of the two fields (`Title` and `Name`) serves as an alternate key for their tables. _Why wouldn't you just use the primary key?_ I wonder. Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
 
-It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value doesn't get set until after it's saved to the database. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a single field that can be used as an alternate key by itself. 
+It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value isn't set until after it's saved to the database. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a single field that can be used as an alternate key by itself. 
+
+To figure out what makes an individual award unique, I inspect the `Awards` table though my giant magnifying glass.
 
 ![imgs/Awards-table-scr-shot.jpg](imgs/Awards-table-scr-shot.jpg)
 
-Each year there are multiple awards given. In any given year, 
+From this data and the list of [past years' Drammy award winners](https://drammyawards.org/past-winners/), I deduce the following:
 
-I use the compound key `(Year, Name, Type, Category)` to serve as an alternate key.
+- There are multiple Drammys given each year. 
+- In any given year, there is exactly one winner in a particular category,
+- And possibly a finalist in the same category.
+- There may or may not be an individual recipient of the award,
+- But there's always a Production associated with it.
+
+I imagine the announcer presenting the award. 
+
+_The finalists for the 2015 Drammy for Best Ensemble in a Play are ..._
+
+_And the winner of the 2015 Drammy for Best Ensemble in a Play goes to ..._
+
+I decide that the compound key `(Year, Name, Type, Category)` is sufficient to serve as an alternate key.
 
 **Solution:**
 
@@ -225,7 +243,6 @@ and then I position the ribbon in the following steps.
 	![imgs/position-ribbon-5.png](imgs/position-ribbon-5.png)
 
 **Solution:**
-
 
 ```css
 .prod-index-ribbon-parent {
