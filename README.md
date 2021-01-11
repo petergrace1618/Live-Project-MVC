@@ -95,7 +95,7 @@ private void SeedAwards()
 }
 ```
 
-I suspect one of the last two lines is the culprit. I gather some clues by inspecting the corresponding lines in the other seed methods.
+I suspect one of the last two lines is the culprit, so I gather some clues by inspecting the corresponding lines in the other seed methods.
 
 ```
 SeedProductions(): 
