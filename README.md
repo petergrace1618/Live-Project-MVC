@@ -105,7 +105,7 @@ SeedCastMembers():
     castMembers.ForEach(castMember => context.CastMembers.AddOrUpdate(c => c.Name, castMember));
 ```
 
-I notice these two `AddOrUpdate()` calls don't reference the primary key like the one in `SeedAwards()` does. I look at the `Productions` and `CastMembers` tables to get some context. I see that each of the two fields (`Title` and `Name`) serves as an alternate key for their tables. _Why wouldn't you just use the primary key?_ I wonder. Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
+I notice these two `AddOrUpdate()` calls don't reference the primary key like the one in `SeedAwards()` does. I look at the `Productions` and `CastMembers` tables to get some context. I see that each of the two fields, `Title` and `Name`, serves as an alternate key for their tables. _Why wouldn't they just use the primary key?_ I wonder. Then it hits me like a ton of bricks. The `AwardId` property in `AddOrUpdate()` is causing the duplicate seed records!
 
 It's like this, see. When an `Award` object is instantiated, `AwardId` is not yet known because its value isn't set until after it's saved to the database. Since `AwardId` is not known, the object will always not be found, and therefore will always be added. Thing is, the `Awards` table doesn't have a single field that can be used as an alternate key by itself. 
 
